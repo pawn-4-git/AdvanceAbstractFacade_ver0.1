@@ -206,6 +206,12 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
+    /**
+     * 指定したNamedQueryをロックを取得して実行する
+     * @param name
+     * @param value
+     * @return 
+     */
      public List<T> findByName(String name,BaseNamedParameter value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
@@ -218,6 +224,13 @@ public abstract class AbstractFacade<T> {
         }
     }
 
+    /**
+     * 指定したNamedQueryをロック無しで実行する
+     * @param name
+     * @param parameterNmae
+     * @param value
+     * @return 
+     */
     public List<T> findByNameNotLock(String name,String parameterNmae,Object value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
@@ -230,6 +243,13 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
+    /**
+     * 1件のみの検索結果を取得　ロックは取得しません
+     * @param name
+     * @param parameterNmae
+     * @param value
+     * @return 
+     */
     public T findByNameSingleNotLock(String name,String parameterNmae,Object value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
@@ -243,7 +263,12 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
-    
+    /**
+     * 指定したNamedQueryに複数パラメータを設定して実行する　ロックは取得しません
+     * @param name
+     * @param value
+     * @return 
+     */
     public List<T> findByNameNotLock(String name,Map<String,Object> value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
@@ -257,7 +282,12 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
-    
+    /**
+     * 指定したNamedQueryを実行する　結果は先頭１件を返します　ロックは取得しません
+     * @param name
+     * @param value
+     * @return 
+     */
     public T findByNameSingleNotLock(String name,Map<String,Object> value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
@@ -272,6 +302,12 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
+    /**
+     * 指定したNamedQueryを実行する　検索結果は複数あり　ロックは取得しません
+     * @param name
+     * @param value
+     * @return 
+     */
     public List<T> findByNameNotLock(String name,List<BaseNamedParameter> value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
@@ -287,6 +323,11 @@ public abstract class AbstractFacade<T> {
         }
     }
     
+    /**
+     * 指定したNamedQueryを実行する　パラメータは指定できません
+     * @param name
+     * @return 
+     */
     public List<T> findByNameNotLock(String name){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
@@ -297,6 +338,11 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
+    /**
+     * 指定したNamedQueryを実行する　検索結果は先頭１件のみ　ロックは取得しません　パラメータは指定できません
+     * @param name
+     * @return 
+     */
     public T findByNameSingleNotLock(String name){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
@@ -308,6 +354,12 @@ public abstract class AbstractFacade<T> {
         }
     }
     
+    /**
+     * 指定したNameQueryを実行　１件のみ取得します　パラメータは複数指定が可能です
+     * @param name
+     * @param value
+     * @return 
+     */
     public T findByNameSingleNotLock(String name,List<BaseNamedParameter> value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
@@ -321,6 +373,12 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
+    /**
+     * 指定したNameQueryを実行します　ロックは取得しません　パラメータは１つのみ指定可能です
+     * @param name
+     * @param value
+     * @return 
+     */
      public List<T> findByNameNotLock(String name,BaseNamedParameter value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
