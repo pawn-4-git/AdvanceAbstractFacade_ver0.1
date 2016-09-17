@@ -101,11 +101,20 @@ public abstract class AbstractFacade<T> {
         
     }
     
-    public List<T> findByName(String name,String parameterNmae,Object value){
+    /**
+     * nameで指定したNamedQuesyを実行する
+     * その際にparameterNameで指定したパラメータにvaluesを代入する
+     * @param name
+     * @param parameterName
+     * @param value
+     * @return 
+     */
+    
+    public List<T> findByName(String name,String parameterName,Object value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
-            if(parameterNmae!=null){
-                q.setParameter(parameterNmae, value);
+            if(parameterName!=null){
+                q.setParameter(parameterName, value);
             }
             q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
             return q.getResultList();
@@ -114,11 +123,20 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
-    public T findByNameSingle(String name,String parameterNmae,Object value){
+    /**
+     * nameで指定したNamedQuesyを実行する
+     * その際にparameterNameで指定したパラメータにvaluesを代入する
+     * 結果は１件のみかえす　検索結果が０件の場合はNullを返す
+     * @param name
+     * @param parameterName
+     * @param value
+     * @return 
+     */
+    public T findByNameSingle(String name,String parameterName,Object value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
-            if(parameterNmae!=null){
-                q.setParameter(parameterNmae, value);
+            if(parameterName!=null){
+                q.setParameter(parameterName, value);
             }
             q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
             return entityClass.cast(q.getResultList().get(0));
@@ -128,12 +146,17 @@ public abstract class AbstractFacade<T> {
         }
     }
     
+    /**
+     * nameで指定したNamedQueryを実行する
+     * valueで指定したマップのキー名の変数に対応する値を代入する
+     * @param name
+     * @param value
+     * @return 
+     */
     public List<T> findByName(String name,Map<String,Object> value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
-//            for(String key:value.keySet()){
-//                q.setParameter(key, value);
-//            }
+
             value.keySet().forEach(key->q.setParameter(key, value.get(key)));
             q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
             return q.getResultList();
@@ -142,7 +165,14 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
-    
+    /**
+     * nameで指定したNamedQueryを実行する
+     * valueで指定したマップのキー名の変数に対応する値を代入する
+     * 検索結果は１件のみ返す　０件の場合はnulを返す
+     * @param name
+     * @param value
+     * @return 
+     */
     public T findByNameSingle(String name,Map<String,Object> value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
@@ -156,12 +186,16 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
+    /**
+     * nameで指定したNamedQueryを実行する
+     * valueで指定したリストのキー名の変数に対応する値を代入する
+     * @param name
+     * @param value
+     * @return 
+     */
     public List<T> findByName(String name,List<BaseNamedParameter> value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
-//            for(BaseNamedParameter key:value){
-//                q.setParameter(key.getKey(), key.getValue());
-//            }
             value.forEach(v->q.setParameter(v.getKey(),v.getValue()));
             q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
             return q.getResultList();
@@ -170,7 +204,12 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
-    
+    /**
+     * nameで指定したNamedQueryを実行する
+     * 変数は指定できません
+     * @param name
+     * @return 
+     */
     public List<T> findByName(String name){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
@@ -181,6 +220,13 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
+    /**
+     * nameで指定したNamedQueryを実行する
+     * 変数は指定できません
+     * 検索結果は１件のみ返します　０件の場合はnullを返します
+     * @param name
+     * @return 
+     */
     public T findByNameSingle(String name){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
@@ -191,13 +237,18 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
-    
+
+    /**
+     * nameで指定したNamedQueryを実行する
+     * valueで指定したリストのキー名の変数に対応する値を代入する
+     * 検索結果は１件のみ返す　０件の場合はnullを返す
+     * @param name
+     * @param value
+     * @return 
+     */
     public T findByNameSingle(String name,List<BaseNamedParameter> value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
-//              for(BaseNamedParameter key:value){
-//                q.setParameter(key.getKey(), key.getValue());
-//            }
             value.forEach(v->q.setParameter(v.getKey(),v.getValue()));
             q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
             return entityClass.cast(q.getResultList().get(0));
@@ -311,9 +362,6 @@ public abstract class AbstractFacade<T> {
     public List<T> findByNameNotLock(String name,List<BaseNamedParameter> value){
         try{
             Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
-//              for(BaseNamedParameter key:value){
-//                q.setParameter(key.getKey(), key.getValue());
-//            }
             value.forEach(v->q.setParameter(v.getKey(),v.getValue()));
             
             return q.getResultList();
@@ -325,6 +373,7 @@ public abstract class AbstractFacade<T> {
     
     /**
      * 指定したNamedQueryを実行する　パラメータは指定できません
+     * ロックは取得しません
      * @param name
      * @return 
      */
