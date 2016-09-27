@@ -455,5 +455,517 @@ public abstract class AbstractFacade<T> {
         this.seq = seq;
     }
      
+    
+    
+    /**
+     * nameで指定したNamedQuesyを実行する
+     * その際にparameterNameで指定したパラメータにvaluesを代入する
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param parameterName
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    
+    public List<T> findByName(String name,String parameterName,Object value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            if(parameterName!=null){
+                q.setParameter(parameterName, value);
+            }
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+            return q.getResultList();
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    /**
+     * nameで指定したNamedQuesyを実行する
+     * その際にparameterNameで指定したパラメータにvaluesを代入する
+     * 結果は１件のみかえす　検索結果が０件の場合はNullを返す
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param parameterName
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public T findByNameSingle(String name,String parameterName,Object value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            if(parameterName!=null){
+                q.setParameter(parameterName, value);
+            }
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+            return entityClass.cast(q.getResultList().get(0));
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    
+    /**
+     * nameで指定したNamedQueryを実行する
+     * valueで指定したマップのキー名の変数に対応する値を代入する
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public List<T> findByName(String name,Map<String,Object> value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            value.keySet().forEach(key->q.setParameter(key, value.get(key)));
+            q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+            return q.getResultList();
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    /**
+     * nameで指定したNamedQueryを実行する
+     * valueで指定したマップのキー名の変数に対応する値を代入する
+     * 検索結果は１件のみ返す　０件の場合はnulを返す
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public T findByNameSingle(String name,Map<String,Object> value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            value.keySet().stream().forEach((key) -> {
+                q.setParameter(key, value.get(key));
+            });
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+            return entityClass.cast(q.getResultList().get(0));
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    /**
+     * nameで指定したNamedQueryを実行する
+     * valueで指定したリストのキー名の変数に対応する値を代入する
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public List<T> findByName(String name,List<BaseNamedParameter> value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            value.forEach(v->q.setParameter(v.getKey(),v.getValue()));
+            q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return q.getResultList();
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    /**
+     * nameで指定したNamedQueryを実行する
+     * 変数は指定できません
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public List<T> findByName(String name,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return q.getResultList();
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    /**
+     * nameで指定したNamedQueryを実行する
+     * 変数は指定できません
+     * 検索結果は１件のみ返します　０件の場合はnullを返します
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public T findByNameSingle(String name,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return entityClass.cast(q.getResultList().get(0));
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+
+    /**
+     * nameで指定したNamedQueryを実行する
+     * valueで指定したリストのキー名の変数に対応する値を代入する
+     * 検索結果は１件のみ返す　０件の場合はnullを返す
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public T findByNameSingle(String name,List<BaseNamedParameter> value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            value.forEach(v->q.setParameter(v.getKey(),v.getValue()));
+            q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return entityClass.cast(q.getResultList().get(0));
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    /**
+     * 指定したNamedQueryをロックを取得して実行する
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+     public List<T> findByName(String name,BaseNamedParameter value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            q.setParameter(value.getKey(), value.getValue());
+            q.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return q.getResultList();
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+
+    /**
+     * 指定したNamedQueryをロック無しで実行する
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param parameterNmae
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public List<T> findByNameNotLock(String name,String parameterNmae,Object value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            if(parameterNmae!=null){
+                q.setParameter(parameterNmae, value);
+            }
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return q.getResultList();
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    /**
+     * 1件のみの検索結果を取得　ロックは取得しません
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param parameterNmae
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public T findByNameSingleNotLock(String name,String parameterNmae,Object value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            if(parameterNmae!=null){
+                q.setParameter(parameterNmae, value);
+            }
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return entityClass.cast(q.getResultList().get(0));
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    /**
+     * 指定したNamedQueryに複数パラメータを設定して実行する　ロックは取得しません
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public List<T> findByNameNotLock(String name,Map<String,Object> value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+//            for(String key:value.keySet()){
+//                q.setParameter(key, value);
+//            }
+            value.keySet().forEach(v->q.setParameter(v,value.get(v)));
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return q.getResultList();
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    /**
+     * 指定したNamedQueryを実行する　結果は先頭１件を返します　ロックは取得しません
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public T findByNameSingleNotLock(String name,Map<String,Object> value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+//            for(String key:value.keySet()){
+//                q.setParameter(key, value);
+//            }
+            value.keySet().forEach(v->q.setParameter(v,value.get(v)));
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return entityClass.cast(q.getResultList().get(0));
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    /**
+     * 指定したNamedQueryを実行する　検索結果は複数あり　ロックは取得しません
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public List<T> findByNameNotLock(String name,List<BaseNamedParameter> value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            value.forEach(v->q.setParameter(v.getKey(),v.getValue()));
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return q.getResultList();
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    
+    /**
+     * 指定したNamedQueryを実行する　パラメータは指定できません
+     * ロックは取得しません
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public List<T> findByNameNotLock(String name,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return q.getResultList();
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    /**
+     * 指定したNamedQueryを実行する　検索結果は先頭１件のみ　ロックは取得しません　パラメータは指定できません
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public T findByNameSingleNotLock(String name,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return entityClass.cast(q.getResultList().get(0));
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    
+    /**
+     * 指定したNameQueryを実行　１件のみ取得します　パラメータは複数指定が可能です
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+    public T findByNameSingleNotLock(String name,List<BaseNamedParameter> value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+//              for(BaseNamedParameter key:value){
+//                q.setParameter(key.getKey(), key.getValue());
+//            }
+            value.forEach(v->q.setParameter(v.getKey(),v.getValue()));
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return entityClass.cast(q.getResultList().get(0));
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+    /**
+     * 指定したNameQueryを実行します　ロックは取得しません　パラメータは１つのみ指定可能です
+     * limit,offsetが設定可能　nullの場合は未設定扱い
+     * @param name
+     * @param value
+     * @param limit
+     * @param offset
+     * @return 
+     */
+     public List<T> findByNameNotLock(String name,BaseNamedParameter value,Integer limit,Integer offset){
+        try{
+            Query q=getEntityManager().createNamedQuery(name, entityClass.getClass());
+            q.setParameter(value.getKey(), value.getValue());
+            
+            if(limit!=null){
+                q.setMaxResults(limit);
+            }
+            if(offset!=null){
+                q.setFirstResult(offset);
+            }
+            return q.getResultList();
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
      
 }
